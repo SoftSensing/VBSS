@@ -22,10 +22,14 @@ def extract_weight(data):
     else:
         return None
 
-while True:
+t1 = time.time()
+for i in range(1,100):
     raw_data = read_weight()
     if raw_data:
         weight = extract_weight(raw_data)
         if weight:
             print(weight)
-    time.sleep(0.025)  # Adjust the sleep time as needed for your application
+    #time.sleep(0.025)  # Adjust the sleep time as needed for your application
+t2 = time.time()
+
+print(t2-t1)
