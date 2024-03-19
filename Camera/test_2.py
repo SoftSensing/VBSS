@@ -10,7 +10,6 @@ import numpy as np
 # Scale parameters
 port = 'COM5'
 baudrate = 9600
-scale_read_interval = 0.05  # Interval for scale readings (20 Hz)
 weight_queue = queue.Queue()
 
 def read_weight():
@@ -30,23 +29,18 @@ def extract_weight(data):
         return None
 
 def weight_reading_thread():
-    last_read_time = 0
     while True:
-        current_time = time.time()
-        if current_time - last_read_time >= scale_read_interval:
-            last_read_time = current_time
-            raw_data = read_weight()
-            if raw_data:
-                weight = extract_weight(raw_data)
-                if weight:
-                    weight_queue.put((last_read_time, weight))
-        time.sleep(0.001)  # Short sleep to avoid high CPU usage
+        raw_data = read_weight()
+        if raw_data:
+            weight = extract_weight(raw_data)
+            if weight:
+                weight_queue.put(weight)
 
 # Start the weight reading thread
 threading.Thread(target=weight_reading_thread, daemon=True).start()
 
-# Camera parameters
-batch_size = 50
+# Camera and batch processing parameters
+batch_size = 1000
 target_resolution = (160, 120)
 batch_queue = queue.Queue()
 
@@ -72,11 +66,14 @@ converter.OutputBitAlignment = pylon.OutputBitAlignment_MsbAligned
 
 frames = []
 weights = []
-frame_time_stamps = []
+last_weight = None
 batch_count = 0
 
 while camera.IsGrabbing():
-    frame_start_time = time.time()
+    # Check for new weight
+    #time.sleep(0.2)
+    if not weight_queue.empty():
+        last_weight = weight_queue.get()
 
     grabResult = camera.RetrieveResult(5000, pylon.TimeoutHandling_ThrowException)
     if grabResult.GrabSucceeded():
@@ -84,28 +81,17 @@ while camera.IsGrabbing():
         img = image.GetArray()
         resized_img = cv2.resize(img, target_resolution)
         frames.append(resized_img)
-        frame_time_stamps.append(frame_start_time)
-
-        # Synchronize weights with frames
-        while not weight_queue.empty():
-            weight_time_stamp, weight = weight_queue.queue[0]  # Peek at the next item
-            if weight_time_stamp <= frame_start_time:
-                _, weight = weight_queue.get()  # Get the actual weight
-                weights.append(weight)
-            else:
-                weights.append(None)  # Append None if no matching weight
-                break
+        weights.append(last_weight)  # Associate the last known weight with this frame
 
         if len(frames) >= batch_size:
             batch_queue.put((batch_count, frames.copy(), weights.copy()))
             frames.clear()
             weights.clear()
-            frame_time_stamps.clear()
             batch_count += 1
 
         cv2.namedWindow('Camera Output', cv2.WINDOW_NORMAL)
         cv2.imshow('Camera Output', resized_img)
-        if cv2.waitKey(1) == 27:  # Exit on pressing 'Esc'
+        if cv2.waitKey(1) == 27:
             break
 
     grabResult.Release()
