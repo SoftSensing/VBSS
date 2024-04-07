@@ -43,7 +43,7 @@ else:
     new_weights_numerical_sample = "No 'weights' array found in the new file."
 
 plt.figure(figsize=(12, 6))
-plt.plot(new_weights_numerical, label='Weight in kg', color='green',linestyle="",marker="*")
+plt.plot(new_weights_numerical, label='Weight in kg', color='green')
 plt.xlabel('Index')
 plt.ylabel('Weight (kg)')
 plt.title('New Weight Distribution')
