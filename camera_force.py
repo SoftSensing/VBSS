@@ -20,18 +20,6 @@ force_queue = queue.Queue()
 def save_batch(frames, forces, batch_id):
     np.savez_compressed(f'output_batch_{batch_id}.npz', frames=np.array(frames), forces=np.array(forces))
 
-# Function to read 6DOF sensor data
-def read_force_data():
-    ser = serial.Serial('COM6', 12000000)
-    while True:
-        serial_line = ser.read(28)
-        [F_x, F_y, F_z, M_x, M_y, M_z, temp] = struct.unpack('fffffff', serial_line[0:28])
-        force_queue.put([F_x, F_y, F_z, M_x, M_y, M_z, temp])
-    ser.close()
-
-# Start force data reading thread
-threading.Thread(target=read_force_data, daemon=True).start()
-
 # Batch saver thread
 def batch_saver_thread():
     while True:
@@ -55,32 +43,45 @@ frames = []
 forces = []
 batch_count = 0
 
+# Enable matrix calculation on electronics 
+SAMPLE = 100  # Sample rate as set by DIP configuration 100 Hz, 500Hz, 1000Hz
+subsample = 2 # it will take one every x force measurements, dividing the force sensor rate by x
+count = 1 # helper variable
+
+# Start serial communication
+ser = serial.Serial(PORT, 12000000)
+
+start = time.time()
 while camera.IsGrabbing():
-    if not force_queue.empty():
-        current_force = force_queue.get()
+    serial_line = ser.read(28)
+    if count == 1:
+        [F_x, F_y, F_z, M_x, M_y, M_z, temp] = struct.unpack('fffffff', serial_line[0:28])
+        current_force = [F_x, F_y, F_z, M_x, M_y, M_z, temp]
+        grabResult = camera.RetrieveResult(5000, pylon.TimeoutHandling_ThrowException)
 
-    grabResult = camera.RetrieveResult(5000, pylon.TimeoutHandling_ThrowException)
-    if grabResult.GrabSucceeded():
-        image = converter.Convert(grabResult)
-        img = image.GetArray()
-        resized_img = cv2.resize(img, target_resolution)
-        frames.append(resized_img)
-        forces.append(current_force)
+        if grabResult.GrabSucceeded():
+            image = converter.Convert(grabResult)
+            img = image.GetArray()
+            resized_img = cv2.resize(img, target_resolution)
+            frames.append(resized_img)
+            forces.append(current_force)
 
-        if len(frames) >= batch_size:
-            batch_queue.put((batch_count, frames.copy(), forces.copy()))
-            frames.clear()
-            forces.clear()
-            batch_count += 1
+            if len(frames) >= batch_size:
+                batch_queue.put((batch_count, frames.copy(), forces.copy()))
+                frames.clear()
+                forces.clear()
+                batch_count += 1
+                end = time.time()
+                print('Elapsed time:',end - start) # the printed time should be batch_size*(1 / (SAMPLE/subsample))
+                start = time.time()
 
-        cv2.namedWindow('Camera Output', cv2.WINDOW_NORMAL)
-        cv2.imshow('Camera Output', resized_img)
-        if cv2.waitKey(1) == 27:
-            break
-
-    grabResult.Release()
+        grabResult.Release()
+    elif count == subsample:
+        count = 0
+    count += 1
 
 # Clean up
+ser.close()
 camera.StopGrabbing()
 cv2.destroyAllWindows()
 
