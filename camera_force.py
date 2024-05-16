@@ -14,7 +14,9 @@ import numpy as np
 batch_size = 1000
 target_resolution = (480, 270)
 batch_queue = queue.Queue()
-force_queue = queue.Queue()
+recording = True
+
+## Saving thread
 
 # Function to save batch
 def save_batch(frames, forces, batch_id):
@@ -25,12 +27,23 @@ def batch_saver_thread():
     while True:
         batch_id, frames, forces = batch_queue.get()
         if frames is None:
+            batch_queue.task_done()
             break
         save_batch(frames, forces, batch_id)
         batch_queue.task_done()
 
 # Start the batch saver thread
 threading.Thread(target=batch_saver_thread, daemon=True).start()
+
+## Keyboard interrupt thread
+
+# Read a keyboard input and set flag to false
+def read_keyboard():
+    global recording
+    input("Press any key to stop recording\n")
+    recording = False
+
+threading.Thread(target=read_keyboard, daemon=True).start()
 
 # Camera setup
 camera = pylon.InstantCamera(pylon.TlFactory.GetInstance().CreateFirstDevice())
@@ -47,12 +60,13 @@ batch_count = 0
 SAMPLE = 100  # Sample rate as set by DIP configuration 100 Hz, 500Hz, 1000Hz
 subsample = 2 # it will take one every x force measurements, dividing the force sensor rate by x
 count = 1 # helper variable
+PORT = 'COM5'
 
 # Start serial communication
 ser = serial.Serial(PORT, 12000000)
 
 start = time.time()
-while camera.IsGrabbing():
+while camera.IsGrabbing() and recording:
     serial_line = ser.read(28)
     if count == 1:
         [F_x, F_y, F_z, M_x, M_y, M_z, temp] = struct.unpack('fffffff', serial_line[0:28])
@@ -87,6 +101,8 @@ cv2.destroyAllWindows()
 
 # Finalizing and saving any remaining data
 if frames:
-    batch_queue.put((batch_count, frames, forces))
+    batch_queue.put((batch_count, frames.copy(), forces.copy()))
 batch_queue.put((None, None, None))  # End signal
+print("waiting for saving thread...")
 batch_queue.join()
+
