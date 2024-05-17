@@ -58,7 +58,7 @@ batch_count = 0
 
 # Enable matrix calculation on electronics 
 SAMPLE = 100  # Sample rate as set by DIP configuration 100 Hz, 500Hz, 1000Hz
-subsample = 2 # it will take one every x force measurements, dividing the force sensor rate by x
+subsample = 5 # it will take one every x force measurements, dividing the force sensor rate by x
 count = 1 # helper variable
 PORT = 'COM5'
 
