@@ -3,7 +3,9 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 
 # Load the batch files (simplified to one file for demonstration)
-filen = 'output_batch_1.npz'  # Update as necessary
+
+filen = 'combined_output_20_3_new.npz'  # Update as necessary
+
 data = np.load(filen)
 all_frames = data['frames']
 all_forces = data['forces']
