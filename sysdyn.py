@@ -66,4 +66,3 @@ sys.fit(system_data, val_sys_data=system_data_val, cuda=True, epochs=300, batch_
 
 # Save the model
 sys.save_system('model2')
-sys

@@ -1,7 +1,7 @@
 import numpy as np
 
 # Define the number of batch files
-num_files = 38  # Adjust this number to the total number of files you have
+num_files = 10  # Adjust this number to the total number of files you have
 
 # Prepare a list to hold the data from each key found in the first file
 data_dict = {}
@@ -24,6 +24,6 @@ for key in data_dict:
     data_dict[key] = np.concatenate(data_dict[key], axis=0)
 
 # Optionally, save the combined arrays to a new file
-np.savez_compressed('combined_output.npz', **data_dict)
+np.savez_compressed('combined_output_20_3_new.npz', **data_dict)
 
 print("Data combined successfully. Data available under the following keys:", list(data_dict.keys()))
