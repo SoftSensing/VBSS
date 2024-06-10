@@ -2,13 +2,13 @@
 ## [Encoder CNN input force.py] and [Encoder CNN input image.py]
 
 ### Overview
-This Jupyter Notebook is designed for training and evaluating the SUBNET Convolutional Neural Network (CNN) that incorporates input force data. The model processes a dataset consisting of 20 frames and 3 forces, aiming to predict outcomes based on these inputs.
+This Jupyter Notebook is designed for training and evaluating the Convolutional Neural Network (CNN) SUBNET that incorporates input force data. The model processes a dataset consisting of 20 frames and 3 forces, aiming to predict outcomes based on these inputs.
 
 ### Purpose
-The primary objective of this notebook is to explore the impact of various hyperparameters on the performance of the encoder CNN. Different configurations such as the number of hidden states, number of frames, and number of forces are tested to optimize model effectiveness.
+The primary objective of this notebook is to explore the impact of various hyperparameters on the performance of the CNN SUBNET. Different configurations such as the number of hidden states, number of frames, and number of forces are tested to optimize model effectiveness.
 
 ### Contents
-1. **Training the Model**: The notebook includes code cells that initialize and train the encoder CNN using the combined dataset.
+1. **Training the Model**: The notebook includes code cells that initialize and train the CNN SUBNET using the combined dataset.
 2. **Evaluation**: After training, the model is evaluated using a test set to assess its predictive accuracy and other performance metrics.
 3. **Results Visualization**: Results from the evaluations are visualized and saved in a designated figures folder. This section helps in understanding the model's performance across different hyperparameters.
 
@@ -138,7 +138,7 @@ This function creates strip plots comparing system output with CNN encoder predi
   - `cmap`: Colormap for the images.
 
 - **Usage:** 
-  Adjust parameters as needed and run the function to generate a strip plot saved as `UD-comparison-figure.png`.
+  Adjust parameters as needed and run the function to generate a strip plot saved as `.png`.
 
 #### `make_video` Function
 
@@ -154,7 +154,7 @@ This function creates an animated video comparing system output with CNN encoder
   - `cmap`: Colormap for the images.
 
 - **Usage:** 
-  Adjust parameters as needed and run the function to generate a video saved as `movies/UD-test.mp4`.
+  Adjust parameters as needed and run the function to generate a video saved as `.mp4`.
 
 Both functions utilize `matplotlib` for plotting and `tqdm` for progress visualization, ensuring efficient and clear visualization of model performance.
 
