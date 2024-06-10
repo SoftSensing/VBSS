@@ -1,4 +1,20 @@
 # Vision-Based Soft Sensor
+This repository contains scripts for data acquisition, processing, and visualization for a vision-based soft sensor system. The system combines camera images with force sensor data to predict force measurements. The repository includes Jupyter Notebooks for model building and evaluation, real-time data acquisition scripts, and visualization tools for examining frame and force data. The scripts are designed to facilitate the development and analysis of vision-based soft sensor systems for force prediction.   
+## CNN-RNN for Force Detection [CNN-RNN-Skeleton-Implem.ipynb]
+
+### Overview
+This Jupyter Notebook introduces a hybrid architecture combining Convolutional Neural Networks (CNN) and Recurrent Neural Networks (RNN) to detect forces from image data. The architecture encodes images to a latent space using CNN layers and then processes these sequences through an RNN to predict forces.
+
+### Purpose
+The purpose of this notebook is to demonstrate how to build and evaluate a model that can effectively process temporal sequences of image data for force prediction. 
+
+### Contents
+1. **Module Imports**: Sets up the necessary libraries and frameworks for model building and evaluation.
+2. **Model Architecture**: Detailed explanation and implementation of the CNN-RNN architecture. This section includes setting up the convolutional layers for image encoding and the RNN layers for sequence processing.
+3. **Data Preparation**: Instructions on how to prepare image datasets for training, including steps for loading, transforming, and splitting the data.
+4. **Training and Evaluation**: Code for training the model on the prepared dataset, followed by its evaluation to determine accuracy and effectiveness.
+5. **Result Visualization**: Visualization of training results, model predictions, and error metrics to assess performance.
+
 ## [Encoder CNN input force.py] and [Encoder CNN input image.py]
 
 ### Overview
