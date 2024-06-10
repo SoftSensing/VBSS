@@ -15,7 +15,7 @@ file_path = os.path.join(path,file_name %i)
 data = np.load(file_path)
 rate = 20
 
-cv2.namedWindow('Camera Output', cv2.WINDOW_NORMAL)
+cv2.namedWindow('Unused for paper Output', cv2.WINDOW_NORMAL)
 
 # Write some Text
 font                   = cv2.FONT_HERSHEY_SIMPLEX
@@ -33,6 +33,6 @@ for frame,forces in zip(data['frames'],data['forces']):
     fontColor,
     thickness,
     lineType)
-    cv2.imshow('Camera Output', frame)
+    cv2.imshow('Unused for paper Output', frame)
     cv2.waitKey(int(1000*1/rate)) # how many milliseconds to wait between each frame
 cv2.destroyAllWindows()

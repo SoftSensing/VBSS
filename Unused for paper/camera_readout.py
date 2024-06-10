@@ -53,8 +53,8 @@ while camera.IsGrabbing():
             batch_count += 1
 
         # Show image (optional)
-        cv2.namedWindow('Camera Output', cv2.WINDOW_NORMAL)
-        cv2.imshow('Camera Output', resized_img)
+        cv2.namedWindow('Unused for paper Output', cv2.WINDOW_NORMAL)
+        cv2.imshow('Unused for paper Output', resized_img)
         k = cv2.waitKey(1)
         if k == 27:
             break

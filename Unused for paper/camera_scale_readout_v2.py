@@ -39,7 +39,7 @@ def weight_reading_thread():
 # Start the weight reading thread
 threading.Thread(target=weight_reading_thread, daemon=True).start()
 
-# Camera and batch processing parameters
+# Unused for paper and batch processing parameters
 batch_size = 1000
 target_resolution = (480, 270)
 batch_queue = queue.Queue()
@@ -89,8 +89,8 @@ while camera.IsGrabbing():
             weights.clear()
             batch_count += 1
 
-        cv2.namedWindow('Camera Output', cv2.WINDOW_NORMAL)
-        cv2.imshow('Camera Output', resized_img)
+        cv2.namedWindow('Unused for paper Output', cv2.WINDOW_NORMAL)
+        cv2.imshow('Unused for paper Output', resized_img)
         if cv2.waitKey(1) == 27:
             break
 

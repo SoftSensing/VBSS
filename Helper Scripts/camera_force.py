@@ -10,7 +10,7 @@ from pypylon import pylon
 import cv2
 import numpy as np
 
-# Camera and batch processing parameters
+# Unused for paper and batch processing parameters
 batch_size = 1000
 target_resolution = (480, 270)
 batch_queue = queue.Queue()
@@ -45,7 +45,7 @@ def read_keyboard():
 
 threading.Thread(target=read_keyboard, daemon=True).start()
 
-# Camera setup
+# Unused for paper setup
 camera = pylon.InstantCamera(pylon.TlFactory.GetInstance().CreateFirstDevice())
 camera.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
 converter = pylon.ImageFormatConverter()
