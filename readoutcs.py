@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
-# Load the batch files (simplified to one file for demonstration)
+# Load the batch files
 
 filen = 'combined_output_20_3_new.npz'  # Update as necessary
 
